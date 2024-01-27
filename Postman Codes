@@ -1,0 +1,38 @@
+import requests
+import json
+import unittest
+
+class TestWeatherApp(unittest.TestCase):
+    def test_get_weather_for_city(self):
+        # Harita API'sinden hava durumu bilgilerini alacak endpoint
+        api_url = "https://api.openweathermap.org/data/2.5/weather"
+
+        # API key, kendi OpenWeatherMap API key'inizle değiştirilmelidir
+        api_key = "your_api_key_here"
+
+        # Şehir bilgisi, örneğin "London"
+        city = "London"
+
+        # API isteği için parametreleri ayarla
+        params = {
+            'q': city,
+            'appid': api_key
+        }
+
+        # API'ye GET isteği gönder
+        response = requests.get(api_url, params=params)
+
+        # Yanıtın başarılı olup olmadığını kontrol et
+        self.assertEqual(response.status_code, 200, "API isteği başarısız")
+
+        # JSON formatındaki yanıtı işle
+        weather_data = json.loads(response.text)
+
+        # Hava durumu verilerini kontrol et
+        self.assertIn('main', weather_data, "Hava durumu verisi eksik")
+        self.assertIn('temp', weather_data['main'], "Sıcaklık verisi eksik")
+
+        print(f"\nHava durumu bilgileri for {city}:\n{json.dumps(weather_data, indent=2)}")
+
+if __name__ == "__main__":
+    unittest.main()
